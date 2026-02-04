@@ -7,6 +7,8 @@ import { serve } from "inngest/express";
 
 import { functions, inngest } from "./config/inngest.js";
 
+import adminRoute from "./routes/admin.route.js";
+
 const app = express();
 
 const __dirname = path.resolve();
@@ -25,6 +27,8 @@ app.get("/api/health", (req, res) => {
   req.auth
   res.status(200).json({ message: "Success Atul Gupta" });
 })
+
+app.use("/api/admin", adminRoute);
 
 // //make our app for ready for deployment
 // if(ENV.NODE_ENV === "production"){

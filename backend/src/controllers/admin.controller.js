@@ -151,8 +151,8 @@ export async function updateOrderStatus(req, res) {
             order.shippedAt = new Date();
         }
 
-        if (status === "delivered" && !order.deliveredAt) {
-            order.deliveredAt = new Date();
+        if (status === "delivered" && !order.deliveryAt) {
+            order.deliveryAt = new Date();
         }
 
         await order.save();

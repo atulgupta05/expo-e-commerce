@@ -165,3 +165,33 @@ export async function updateOrderStatus(req, res) {
         res.status(500).json({ message: "Internal Server Error" });
     }
 }
+
+export async function getAllCustomers(_, res) {
+    try {
+        const customers = await User.find().sort({ createdAt: -1 });  // latest user first
+        res.status(200).json({customers});
+    } catch (error) {
+        console.error("Something error occured while fetching customers : ", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+export async function getDashboardStats(_, res) {
+    try {
+        const totalOrders = await Order.countDocuments();
+        const totalRevenue = await Order.aggregate([
+            { $match: { status: "delivered" } },
+            { $group: { _id: null, total: { $sum: "$totalAmount" } } }
+        ]);
+        const totalRevenueAmount = totalRevenue[0]?.total || 0;
+        
+        res.status(200).json({
+            totalOrders,
+            totalRevenue: totalRevenueAmount
+        });
+    } catch (error) {
+        console.error("Something error occured while fetching dashboard stats : ", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+

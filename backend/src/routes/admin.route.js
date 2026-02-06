@@ -1,5 +1,5 @@
 import {Router} from "express";
-import { createProduct, getAllProducts, updateProduct, deleteProduct, getAllOrders, updateOrderStatus } from "../controllers/admin.controller.js";
+import { createProduct, getAllProducts, updateProduct, deleteProduct, getAllOrders, updateOrderStatus, getDashboardStats, getAllCustomers } from "../controllers/admin.controller.js";
 import { adminOnly, protectRoute } from "../middleware/auth.middleware.js";
 import { upload } from "../middleware/multer.middleware.js";
 
@@ -19,6 +19,10 @@ router.get("/orders", getAllOrders)
 router.patch("/orders/:orderId/status", updateOrderStatus) // Patch update partial resource like one only
 
 // router.delete("/products/:id", deleteProduct)
+
+router.get("/customers", getAllCustomers)
+
+router.get("/stats", getDashboardStats)
 
 
 export default router;

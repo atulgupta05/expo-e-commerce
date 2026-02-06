@@ -114,23 +114,54 @@ export async function deleteProduct(req, res) {
 }
 
 
-export async function getAllOrders(req, res){
+export async function getAllOrders(req, res) {
 
     try {
         const orders = await Order.find()
-        .populate("user", "name email")
-        .populate("orderItems.product")
-        .sort({ createdAt: -1 })
+            .populate("user", "name email")
+            .populate("orderItems.product")
+            .sort({ createdAt: -1 })
         res.status(200).json(orders)
 
 
-        
+
     } catch (error) {
         console.error("Something error occured while fetching orders : ", error)
         res.status(500).json({ message: "Internal Server Error" })
     }
 }
 
-export async function updateOrderStatus(req, res){
-    
+export async function updateOrderStatus(req, res) {
+    try {
+        const { orderId } = req.params;
+        const { status } = req.body;
+
+        if (!["pending", "shipped", "delivered"].includes(status)) {
+            return res.status(400).json({ message: "Invalid status" });
+        }
+
+        const order = await Order.findById(orderId);
+        if (!order) {
+            return res.status(404).json({ message: "Order not found" });
+        }
+
+        order.status = status;
+
+        if (status === "shipped" && !order.shippedAt) {
+            order.shippedAt = new Date();
+        }
+
+        if (status === "delivered" && !order.deliveredAt) {
+            order.deliveredAt = new Date();
+        }
+
+        await order.save();
+
+        res.status(200).json({ message: "Order status updated successfully", order });
+
+
+    } catch (error) {
+        console.error("Something error occured while updating order status : ", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
 }

@@ -178,6 +178,8 @@ export async function getAllCustomers(_, res) {
 
 export async function getDashboardStats(_, res) {
     try {
+
+        //new coment
         const totalOrders = await Order.countDocuments();
         const totalRevenue = await Order.aggregate([
             { 
